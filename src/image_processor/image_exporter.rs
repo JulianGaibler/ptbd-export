@@ -20,12 +20,12 @@ pub fn save(images : std::slice::Iter<DynamicImage>, path: &PathBuf, format: &Im
             ImageType::Png => {
                 let (ct, bits) = image.color().into();
                 let mut encoder = png::Encoder::new(&mut writer, image_width, image_height);
-                encoder.set(ct).set(bits).set(png::Compression::Default);
+                encoder.set(ct).set(bits).set(png::Compression::Best);
                 let mut writer = encoder.write_header().unwrap();
                 writer.write_image_data(image.as_rgb8().unwrap()).unwrap();
             },
             ImageType::Jpeg => {
-                let mut encoder = JPEGEncoder::new_with_quality(&mut writer, 100);
+                let mut encoder = JPEGEncoder::new_with_quality(&mut writer, 95);
                 encoder.encode(image.as_rgb8().unwrap(), image_width, image_height, image.color()).unwrap();
             },
         }
