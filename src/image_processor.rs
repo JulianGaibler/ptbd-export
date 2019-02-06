@@ -1,19 +1,15 @@
 #![allow(dead_code)]
 #![allow(unused)]
 
-use crate::configuration::ImageExtension;
-use crate::configuration::ImageType;
 use crate::configuration::Pile;
-use crate::configuration::Distribution;
 use std::fs;
-use std::fs::File;
-use std::io::BufWriter;
 use image::DynamicImage;
 use std::path::PathBuf;
 
 mod print_info;
 mod print_instructions;
 mod image_printer;
+mod image_exporter;
 
 pub struct ImageResources<'a> {
     tiles: &'a Vec<DynamicImage>,
@@ -43,21 +39,9 @@ pub fn process_pile(p: &Pile, tiles: &Vec<DynamicImage>, mut path: PathBuf) -> R
     fs::create_dir_all(&path)?;
 
     println!("Stage: save_images");
-    save_images(generated_images.iter(), &path, &p.format);
+    image_exporter::save(generated_images.iter(), &path, &p.format);
 
     Ok(())
-}
-
-fn save_images(mut images : std::slice::Iter<DynamicImage>, path: &PathBuf, format: &ImageType) {
-    for (i, image) in images.enumerate() {
-        let mut path = path.clone();
-        path.push(format!("file{}.{}",i, match format {
-            Png => "png",
-            Jpeg => "jpg",
-        }));
-
-        image.save(path).unwrap();
-    }
 }
 
 fn load_all_resources<'a>(p: &Pile, tiles: &'a Vec<DynamicImage>) -> Result<ImageResources<'a>, Box<std::error::Error>> {
