@@ -1,4 +1,4 @@
-#ptbd-export
+# ptbd-export
 Tool to convert comics into different layouts, sizes and formats.
 
 ## Commits
