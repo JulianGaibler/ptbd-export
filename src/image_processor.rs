@@ -1,10 +1,8 @@
-#![allow(dead_code)]
-#![allow(unused)]
-
 use crate::configuration::Pile;
 use std::fs;
 use image::DynamicImage;
 use std::path::PathBuf;
+use colored::*;
 
 mod print_info;
 mod print_instructions;
@@ -22,6 +20,8 @@ pub fn process_pile(p: &Pile, tiles: &Vec<DynamicImage>, mut path: PathBuf) -> R
     let resources = load_all_resources(&p, &tiles)?;
 
     let print_infos = print_info::generate(p, tiles.len());
+
+    println!("{}", p.name.yellow());
 
     println!("Stage: print_instructions::generate");
     let file_info = print_instructions::generate(&print_infos, &resources);

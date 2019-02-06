@@ -20,6 +20,7 @@ pub fn from_dir(directory: &String) -> Result<Vec<DynamicImage>, Box<std::error:
             paths.push(path.into_os_string().into_string().unwrap());
         }
     }
+    paths.sort();
 
     from_paths(&paths)
 }
