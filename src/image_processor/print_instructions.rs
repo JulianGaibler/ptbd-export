@@ -24,10 +24,6 @@ impl<'a> std::fmt::Debug for TransformInfo<'a> {
     }
 }
 
-fn resize_by_width((w,h): (u32,u32), width: u32) -> (u32,u32) {
-    (width, (width as f64 * (h as f64 / w as f64)) as u32)
-}
-
 pub fn generate<'a>(print_infos: &Vec<PrintInfo>, resources: &'a ImageResources) -> Vec<FileInfo<'a>> {
     print_infos.iter().map(|info| {
         let mut height = if info.cut_top_margin {info.margin / 2} else {info.margin};
@@ -41,7 +37,7 @@ pub fn generate<'a>(print_infos: &Vec<PrintInfo>, resources: &'a ImageResources)
         let nr_tiles = info.range.1 - info.range.0;
         for i in 0..nr_tiles {
             let image_ref = &resources.tiles[(info.range.0 + i)];
-            let (img_width, img_height) = resize_by_width(image_ref.dimensions(), info.tile_width);
+            let (img_width, img_height) = resize_dimensions(image_ref.dimensions(), info.tile_width, 500, true);
 
             let curr_col = i as u8 % info.columns as u8;
             let pos_x = info.margin * (curr_col as u32 + 1) + info.tile_width * curr_col as u32;
@@ -82,8 +78,8 @@ fn add_extension<'a>(ext: &'a Option<DynamicImage>, info: &PrintInfo, height: &m
         Some(ext_ref) => { ext_ref },
         None => panic!("Empty header reference!"),
     };
+    let (img_width, img_height) = resize_dimensions(ext_ref.dimensions(), info.tile_width, 0, true);
 
-    let (img_width, img_height) = resize_by_width(ext_ref.dimensions(), info.tile_width);
     // Center horizontally
     let pos_x = ((info.margin as f64 * 0.5 + (info.width - info.margin) as f64 * 0.5) - (img_width as f64 / 2.0)) as u32;
     let instr = TransformInfo {
@@ -95,4 +91,38 @@ fn add_extension<'a>(ext: &'a Option<DynamicImage>, info: &PrintInfo, height: &m
     };
     *height += img_height + info.margin;
     instr
+}
+
+// Forked from PistonDevelopers/image/src/dynimage.rs
+fn resize_dimensions((width, height): (u32,u32), nwidth: u32, nheight: u32, fill: bool) -> (u32, u32) {
+    let ratio = u64::from(width) * u64::from(nheight);
+    let nratio = u64::from(nwidth) * u64::from(height);
+
+    let use_width = if fill {
+        nratio > ratio
+    } else {
+        nratio <= ratio
+    };
+    let intermediate = if use_width {
+        u64::from(height) * u64::from(nwidth) / u64::from(width)
+    } else {
+        u64::from(width) * u64::from(nheight) / u64::from(height)
+    };
+    if use_width {
+        if intermediate <= u64::from(::std::u32::MAX) {
+            (nwidth, intermediate as u32)
+        } else {
+            (
+                (u64::from(nwidth) * u64::from(::std::u32::MAX) / intermediate) as u32,
+                ::std::u32::MAX,
+            )
+        }
+    } else if intermediate <= u64::from(::std::u32::MAX) {
+        (intermediate as u32, nheight)
+    } else {
+        (
+            ::std::u32::MAX,
+            (u64::from(nheight) * u64::from(::std::u32::MAX) / intermediate) as u32,
+        )
+    }
 }
