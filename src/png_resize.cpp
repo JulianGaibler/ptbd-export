@@ -24,7 +24,7 @@ uint8_t* resize_image(uint32_t width, uint32_t height, uint32_t nwidth, uint32_t
     // Allocating memory on heap
     auto* bytes = static_cast<uint8_t*>(malloc(sizeof(uint8_t) * size));
     // Copying data from image to buffer
-    std::memcpy(bytes,image.data,size * sizeof(uint8_t));
+    std::memcpy(bytes, resized_tile.data, size * sizeof(uint8_t));
     // Chaning allocated_size
     allocated_size = size;
     // Return buffer
