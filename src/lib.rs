@@ -15,7 +15,7 @@ pub fn run(config: ExportConfig) -> Result<(), Box<dyn Error>> {
     fs::create_dir_all(&path)?;
 
     for p in config.piles {
-        image_processor::process_pile(&p, &tiles, path.clone());
+        image_processor::process_pile(&p, &tiles, path.clone())?;
     }
 
     return Ok(());

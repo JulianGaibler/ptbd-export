@@ -26,12 +26,6 @@ pub fn process_pile(p: &Pile, tiles: &Vec<DynamicImage>, mut path: PathBuf) -> R
     println!("Stage: print_instructions::generate");
     let file_info = print_instructions::generate(&print_infos, &resources);
 
-    //println!("Pile: {}", p.name);
-    //for p in file_info {
-    //  println!("{:?}", p);
-    //}
-    //println!("");
-
     println!("Stage: image_printer::generate");
     let generated_images = image_printer::generate(&file_info);
 

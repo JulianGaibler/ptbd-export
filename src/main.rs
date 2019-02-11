@@ -4,8 +4,6 @@ use std::env;
 use std::process;
 
 fn main() {
-    println!("Hello, world!");
-
     let filename = read_args(env::args()).unwrap_or_else(|err| {
         eprintln!("Problem parsing arguments: {}", err);
         process::exit(1);
