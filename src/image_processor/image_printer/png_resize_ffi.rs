@@ -18,12 +18,9 @@ pub fn resize(old_image: &DynamicImage, nwidth: u32, nheight: u32) -> ImageResul
     let mut raw = arr.clone().into_raw();
     let vec;
     unsafe {
-        println!("BLOARG: {}", allocated_size);
         let result = resize_image(width, height, nwidth, nheight, raw.as_mut_ptr());
         vec = slice::from_raw_parts(result, allocated_size as usize).to_vec();
-        println!("BLOARG: {}", allocated_size);
         free_image(result);
-        println!("BLOARG: {}", allocated_size);
     }
 
     let image = ImageBuffer::from_raw(nwidth, nheight, vec).map(DynamicImage::ImageRgb8);

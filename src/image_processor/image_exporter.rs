@@ -22,16 +22,14 @@ pub fn save(images : std::slice::Iter<DynamicImage>, path: &PathBuf, format: &Im
                 let mut intermediary_buffer: Vec<u8> = Vec::new();
                 {
                     let mut encoder = png::Encoder::new(&mut intermediary_buffer, image_width, image_height);
-                    encoder.set(ct).set(bits);
+                    encoder.set(ct).set(bits).set(ct).set(bits).set(png::Compression::Best);
                     let mut png_writer = encoder.write_header().unwrap();
                     png_writer.write_image_data(image.as_rgb8().unwrap()).unwrap();
                 }
 
-                //println!("VEC: {:?}", intermediary_buffer);
-
                 let mut options = oxipng::Options::from_preset(6);
                 options.interlace = Some(1);
-                //println!("{:?}", options);
+                options.verbosity = None;
 
                 let png_result = oxipng::optimize_from_memory(&intermediary_buffer, &options);
                 match png_result {
