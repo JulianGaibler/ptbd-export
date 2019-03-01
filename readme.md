@@ -1,5 +1,4 @@
-# ptbd-export
-Tool to convert comics into different layouts, sizes and formats.
+![ptbd-export](http://qvieo.com/githubimg/ptbd-export-banner.png)
 
 ## Build Setup
 
