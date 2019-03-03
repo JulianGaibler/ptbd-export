@@ -28,12 +28,18 @@ pub struct ExportConfig {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Pile {
     pub name: String,
+    #[serde(default = "default_filename")]
+    pub filename: String,
     pub width: u32,
     pub format: ImageType,
     pub margin: u32,
     pub distribution: Distribution,
     pub header: Option<ImageExtension>,
     pub footer: Option<ImageExtension>,
+}
+
+fn default_filename() -> String {
+    "file$".to_string()
 }
 
 #[derive(Serialize, Deserialize, Debug)]

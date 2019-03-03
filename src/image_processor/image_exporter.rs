@@ -6,13 +6,17 @@ use std::io::{BufWriter, Write};
 use image::jpeg::JPEGEncoder;
 use png::HasParameters;
 
-pub fn save(images : std::slice::Iter<DynamicImage>, path: &PathBuf, format: &ImageType) {
+pub fn save(images : std::slice::Iter<DynamicImage>, path: &PathBuf, filename: &String, format: &ImageType) {
     for (i, image) in images.enumerate() {
         let mut path = path.clone();
-        path.push(format!("file{}.{}",i+1, match format {
+
+        let filename = format!("{}.{}",filename, match format {
             ImageType::Png => "png",
             ImageType::Jpeg => "jpg",
-        }));
+        }).replace("$", &(i+1).to_string());
+
+        path.push(filename);
+
         let (image_width, image_height) = image.dimensions();
         let file = File::create(&path).expect("Unable to create file");
         let mut writer = BufWriter::new(file);

@@ -33,7 +33,7 @@ pub fn process_pile(p: &Pile, tiles: &Vec<DynamicImage>, mut path: PathBuf) -> R
     fs::create_dir_all(&path)?;
 
     println!("Stage: save_images");
-    image_exporter::save(generated_images.iter(), &path, &p.format);
+    image_exporter::save(generated_images.iter(), &path, &p.filename, &p.format);
 
     Ok(())
 }
