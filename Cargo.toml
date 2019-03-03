@@ -1,6 +1,6 @@
 [package]
-name = "ptbd_export"
-version = "0.1.0"
+name = "ptbd-export"
+version = "1.0.0"
 authors = ["Juliana Gaibler <git@juliana.me>"]
 edition = "2018"
 build = "build.rs"
