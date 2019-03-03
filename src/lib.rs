@@ -12,6 +12,7 @@ pub fn run(config: ExportConfig) -> Result<(), Box<dyn Error>> {
     let tiles = image_loader::from_dir(&config.import_path)?;
 
     let path = PathBuf::from(&config.export_path);
+    fs::remove_dir_all(&path)?;
     fs::create_dir_all(&path)?;
 
     for p in config.piles {
