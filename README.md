@@ -1,4 +1,4 @@
-![ptbd-export](http://qvieo.com/githubimg/banner_ptbd_export.png)
+![ptbd-export](http://qvieo.com/githubimg/banner_ptbd_export.png?)
 
 ## Introduction
 
