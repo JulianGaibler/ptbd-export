@@ -1,5 +1,5 @@
 use image::ImageResult;
-use libc::*;
+
 use std::slice;
 use image::{DynamicImage, GenericImageView, ImageBuffer};
 
@@ -7,8 +7,8 @@ use image::{DynamicImage, GenericImageView, ImageBuffer};
 #[link(name = "opencv_imgproc")]
 extern {
     static allocated_size: libc::size_t;
-    fn resize_image(width: uint32_t, height: uint32_t, nwidth: uint32_t, nheight: uint32_t, data: *mut uint8_t) -> *const uint8_t;
-    fn free_image(input: *const uint8_t);
+    fn resize_image(width: u32, height: u32, nwidth: u32, nheight: u32, data: *mut u8) -> *const u8;
+    fn free_image(input: *const u8);
 }
 
 
