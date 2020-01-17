@@ -9,7 +9,7 @@ pub fn generate(print_infos: &Vec<FileInfo>) -> Vec<DynamicImage> {
         imgbuf.invert(); // Turns image white
         for component in &print_info.components {
             let resized = png_resize_ffi::resize(&component.image, component.width, component.height)
-                .expect("Image resizing did not go well");;
+                .expect("Image resizing did not go well");
             imgbuf.copy_from(&resized, component.pos_x, component.pos_y);
         }
         imgbuf

@@ -15,7 +15,7 @@ pub struct ImageResources<'a> {
     footer: Option<DynamicImage>,
 }
 
-pub fn process_pile(p: &Pile, tiles: &Vec<DynamicImage>, mut path: PathBuf) -> Result<(), Box<std::error::Error>> {
+pub fn process_pile(p: &Pile, tiles: &Vec<DynamicImage>, mut path: PathBuf) -> Result<(), Box<dyn std::error::Error>> {
 
     let resources = load_all_resources(&p, &tiles)?;
 
@@ -38,7 +38,7 @@ pub fn process_pile(p: &Pile, tiles: &Vec<DynamicImage>, mut path: PathBuf) -> R
     Ok(())
 }
 
-fn load_all_resources<'a>(p: &Pile, tiles: &'a Vec<DynamicImage>) -> Result<ImageResources<'a>, Box<std::error::Error>> {
+fn load_all_resources<'a>(p: &Pile, tiles: &'a Vec<DynamicImage>) -> Result<ImageResources<'a>, Box<dyn std::error::Error>> {
 let mut resources = ImageResources {
         tiles: &tiles,
         header: None,

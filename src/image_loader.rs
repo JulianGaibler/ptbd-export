@@ -2,7 +2,7 @@ use std::fs;
 use image::DynamicImage;
 
 
-pub fn from_dir(directory: &String) -> Result<Vec<DynamicImage>, Box<std::error::Error>> {
+pub fn from_dir(directory: &String) -> Result<Vec<DynamicImage>, Box<dyn std::error::Error>> {
     let valid_extensions = vec!["png", "jpeg", "jpg"];
     let mut paths = Vec::new();
 
@@ -25,7 +25,7 @@ pub fn from_dir(directory: &String) -> Result<Vec<DynamicImage>, Box<std::error:
     from_paths(&paths)
 }
 
-pub fn from_paths(paths: &Vec<String>) -> Result<Vec<DynamicImage>, Box<std::error::Error>> {
+pub fn from_paths(paths: &Vec<String>) -> Result<Vec<DynamicImage>, Box<dyn std::error::Error>> {
     let mut images = Vec::new();
 
     for path in paths {
