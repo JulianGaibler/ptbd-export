@@ -1,7 +1,6 @@
 use std::fs;
 use image::DynamicImage;
 
-
 pub fn from_dir(directory: &String) -> Result<Vec<DynamicImage>, Box<dyn std::error::Error>> {
     let valid_extensions = vec!["png", "jpeg", "jpg"];
     let mut paths = Vec::new();

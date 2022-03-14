@@ -5,12 +5,11 @@ use image::{DynamicImage, GenericImageView, ImageBuffer};
 
 #[link(name = "opencv_core")]
 #[link(name = "opencv_imgproc")]
-extern {
+extern "C" {
     static allocated_size: libc::size_t;
     fn resize_image(width: u32, height: u32, nwidth: u32, nheight: u32, data: *mut u8) -> *const u8;
     fn free_image(input: *const u8);
 }
-
 
 pub fn resize(old_image: &DynamicImage, nwidth: u32, nheight: u32) -> ImageResult<DynamicImage> {
     let (width, height) = old_image.dimensions();
