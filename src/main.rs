@@ -23,7 +23,6 @@ fn main() {
         println!("Problem: {}", err);
         process::exit(1);
     });
-
 }
 
 pub fn read_args(mut args: std::env::Args) -> Result<String, &'static str> {

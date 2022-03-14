@@ -8,14 +8,10 @@ pub enum ImageType {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum Distribution {
-    AllInOne {
-        columns: u8,
-    },
+    AllInOne { columns: u8 },
     AllSeperate,
     AllSeperateTreatAsOne,
-    DistributeOverNr {
-        pages: u8,
-    },
+    DistributeOverNr { pages: u8 },
 }
 
 #[derive(Serialize, Deserialize, Debug)]
