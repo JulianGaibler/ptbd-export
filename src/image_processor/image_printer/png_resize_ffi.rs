@@ -1,30 +1,66 @@
-use image::ImageResult;
-
-use std::slice;
-use image::{DynamicImage, GenericImageView, ImageBuffer};
-
-#[link(name = "opencv_core")]
-#[link(name = "opencv_imgproc")]
-extern "C" {
-    static allocated_size: libc::size_t;
-    fn resize_image(width: u32, height: u32, nwidth: u32, nheight: u32, data: *mut u8) -> *const u8;
-    fn free_image(input: *const u8);
-}
+use fast_image_resize::{images::Image, PixelType, Resizer, ResizeOptions};
+use image::{DynamicImage, ImageBuffer, Rgb, ImageError, ImageResult};
 
 pub fn resize(old_image: &DynamicImage, nwidth: u32, nheight: u32) -> ImageResult<DynamicImage> {
-    let (width, height) = old_image.dimensions();
-    let arr = old_image.as_rgb8().expect("Input images were in rgb8!");
-    let mut raw = arr.clone().into_raw();
-    let vec;
-    unsafe {
-        let result = resize_image(width, height, nwidth, nheight, raw.as_mut_ptr());
-        vec = slice::from_raw_parts(result, allocated_size as usize).to_vec();
-        free_image(result);
-    }
+    let rgb_image = old_image.to_rgb8();
+    let (width, height) = rgb_image.dimensions();
 
-    let image = ImageBuffer::from_raw(nwidth, nheight, vec).map(DynamicImage::ImageRgb8);
-    match image {
-        Some(image) => Ok(image),
-        None => Err(image::ImageError::DimensionError),
-    }
+    // Create source image
+    let src_image = Image::from_vec_u8(
+        width.try_into().map_err(|_| {
+            ImageError::Limits(image::error::LimitError::from_kind(
+                image::error::LimitErrorKind::DimensionError,
+            ))
+        })?,
+        height.try_into().map_err(|_| {
+            ImageError::Limits(image::error::LimitError::from_kind(
+                image::error::LimitErrorKind::DimensionError,
+            ))
+        })?,
+        rgb_image.into_raw(),
+        PixelType::U8x3,
+    )
+    .map_err(|_| {
+        ImageError::Limits(image::error::LimitError::from_kind(
+            image::error::LimitErrorKind::DimensionError,
+        ))
+    })?;
+
+    // Create destination image
+    let mut dst_image = Image::new(
+        nwidth.try_into().map_err(|_| {
+            ImageError::Limits(image::error::LimitError::from_kind(
+                image::error::LimitErrorKind::DimensionError,
+            ))
+        })?,
+        nheight.try_into().map_err(|_| {
+            ImageError::Limits(image::error::LimitError::from_kind(
+                image::error::LimitErrorKind::DimensionError,
+            ))
+        })?,
+        PixelType::U8x3,
+    );
+
+    // Resize with high-quality algorithm
+    let mut resizer = Resizer::new();
+    let resize_options = ResizeOptions::new().resize_alg(fast_image_resize::ResizeAlg::Convolution(
+        fast_image_resize::FilterType::Lanczos3,
+    ));
+    resizer
+        .resize(&src_image, &mut dst_image, Some(&resize_options))
+        .map_err(|_| {
+            ImageError::Limits(image::error::LimitError::from_kind(
+                image::error::LimitErrorKind::DimensionError,
+            ))
+        })?;
+
+    // Convert back to DynamicImage
+    let buffer = ImageBuffer::<Rgb<u8>, Vec<u8>>::from_raw(nwidth, nheight, dst_image.into_vec())
+        .ok_or_else(|| {
+            ImageError::Limits(image::error::LimitError::from_kind(
+                image::error::LimitErrorKind::DimensionError,
+            ))
+        })?;
+
+    Ok(DynamicImage::ImageRgb8(buffer))
 }
