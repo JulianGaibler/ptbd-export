@@ -50,7 +50,7 @@ pub fn generate<'a>(print_infos: &Vec<PrintInfo>, resources: &'a ImageResources)
             let mut largest = 0;
             let nr_tiles = info.range.1 - info.range.0;
             for i in 0..nr_tiles {
-                let image_ref = &resources.tiles[(info.range.0 + i)];
+                let image_ref = &resources.tiles[info.range.0 + i];
                 let (img_width, img_height) =
                     resize_dimensions(image_ref.dimensions(), info.tile_width, 500, true);
 
